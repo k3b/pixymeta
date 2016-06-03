@@ -174,16 +174,19 @@ public class TestPixyMeta {
 	}
 	
 	private static BufferedImage createThumbnail(String filePath) throws IOException {
+        System.err.print ("createThumbnail('" + filePath + "')\n");
 		FileInputStream fin = null;
+		BufferedImage thumbnail = null;
 		try {
 			fin = new FileInputStream(filePath);
-		} catch (FileNotFoundException e) {
+			thumbnail = MetadataUtils.createThumbnail(fin);
+		} catch (Exception e) {
+            System.err.print ("createThumbnail('" + filePath + "') failed\n");
 			e.printStackTrace();
+            LOGGER.error("createThumbnail('" + filePath + "') failed", e);
 		}
 		
-		BufferedImage thumbnail = MetadataUtils.createThumbnail(fin);
-		
-		fin.close();
+		if (fin != null) fin.close();
 		
 		return thumbnail;
 	}

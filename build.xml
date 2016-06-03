@@ -31,10 +31,13 @@
                 <include name="*"/>
              </fileset>
         </copy>
+		<mkdir dir="demo"/>
+		<mkdir dir="demo/images"/>
 	</target>
 	<target name="clean">
 		<delete dir="build"/>
 		<delete dir="dist"/>
+		<delete dir="demo"/>
 	</target>
 	<target name="doc" depends="init" >
 		<javadoc destdir="build/doc" classpathref="pixymeta.classpath" additionalparam="-notimestamp" packagenames="pixy.*">
@@ -57,6 +60,36 @@
 		<delete file="lib/pixymeta.jar"/>
 		<copy file="dist/pixymeta.jar" todir="lib"/>
 	</target>
+	
+	<target name="jar" depends="compile">
+		<jar destfile="dist/pixymeta.jar">
+		    <fileset dir="build/classes"/>
+	    </jar>
+	</target>
+	<target name="demo" depends="jar">
+		<copy todir="demo">
+			<fileset dir="lib"/>
+		</copy>
+		<copy file="dist/pixymeta.jar" todir="demo" />
+		
+		<copy todir="demo/images">
+			<fileset dir="images"/>
+		</copy>
+		<copy todir="demo">
+			<fileset dir="lib"/>
+		</copy>
+
+		<exec executable="java" dir = "demo">
+			<arg line="-Dfile.encoding=UTF-8 -classpath pixymeta.jar;slf4j-api-1.7.12.jar;slf4j-log4j12-1.7.12.jar;jai_imageio.jar;log4j-1.2.17.jar pixy.test.TestPixyMeta ./images/cmykjpg.jpg"/>
+		 </exec>
+	</target>
+
+	<target name="ttest">
+		<exec executable="java" dir = "demo">
+			<arg line="-Dfile.encoding=UTF-8 -classpath pixymeta.jar;slf4j-api-1.7.12.jar;slf4j-log4j12-1.7.12.jar;jai_imageio-core-1.3.1.jar;log4j-1.2.17.jar pixy.test.TestPixyMeta ./images/cmykjpg.jpg"/>
+		 </exec>
+	</target>
+
 	<target name="package-snapshot">
 	    <jar destfile="dist/${artifactId}-${version}.jar">
 		    <fileset dir="build/classes"/>
